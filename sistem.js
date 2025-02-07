@@ -161,35 +161,40 @@ function displayProducts(products) {
     listItem.setAttribute("data-product-price", hargaFormatted);
     listItem.setAttribute("data-product-description", deskripsi);
     listItem.setAttribute("data-product-url", product.url_produk);
+    
     let ribbonHTML = "";
     if (product.stok <= 1) {
       ribbonHTML = `<div class="ribbon"><span>${stokText}</span></div>`;
     }
+
     let hargaAsliFormatted = "";
     if (product.harga_produk_asli !== 0) {
       hargaAsliFormatted = formatRupiah(product.harga_produk_asli);
     }
+    let isDisabled = product.stok <= 0 ? 'disabled' : '';
+    let clickEvent = isDisabled ? '' : `onclick="showProductDetails('${product.nama_produk}', '${deskripsi}', ${product.harga_produk}, '${product.url_produk}');cekNick()"`;
+
     listItem.innerHTML = `
-      <div class="pil-produk" onclick="showProductDetails('${product.nama_produk}', '${deskripsi}', ${product.harga_produk}, '${product.url_produk}');cekNick()">
+      <div class="pil-produk" ${clickEvent} style="${isDisabled ? 'pointer-events: none; opacity: 0.5;' : ''}">
         <div class="d-flex">
-        <img src="${product.url_gambar_produk}" alt="Product Icon" class="icon--produk img-produk">
-        <div class="tag-produk">
+          <img src="${product.url_gambar_produk}" alt="Product Icon" class="icon--produk img-produk">
+          <div class="tag-produk">
             <h4 class="nama--produk w-100">${product.nama_produk}</h4>
             <div class="d-flex" style="justify-content:end;gap:10px;">
-            <s>${hargaAsliFormatted}</s>
-            <p>${hargaFormatted}</p>
+              <s>${hargaAsliFormatted}</s>
+              <p>${hargaFormatted}</p>
             </div>
           </div>
-        <div>
-          
-          ${ribbonHTML}
+          <div>
+            ${ribbonHTML}
+          </div>
+        </div>
       </div>
     `;
 
     productContainer.appendChild(listItem);
   });
 }
-
 
 function cekNick() {
     var id = $('#id').val();
