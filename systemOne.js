@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function fetchCategories() {
   const url = `https://openapi.bukaolshop.net/v1/app/kategori?token=${tokenapi}`;
-  
   fetch(url)
     .then(response => {
       if (!response.ok) {
@@ -13,20 +12,10 @@ function fetchCategories() {
       return response.json();
     })
     .then(data => {
-      if (!data.data || data.data.length === 0) {
-        console.error("Kategori tidak ditemukan, memuat ulang halaman...");
-        setTimeout(() => {
-          location.reload();
-        }, 3000); 
-      } else {
-        displayCategories(data.data); 
-      }
+      displayCategories(data.data); 
     })
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
-      setTimeout(() => {
-        location.reload(); 
-      }, 3000); 
     });
 }
 
@@ -122,7 +111,7 @@ function highlightTabButton(activeButton) {
 function fetchProducts(id_kategori) {
   var limit = "100";
   var apiUrl = "https://openapi.bukaolshop.net/v1/app/produk?token=" + tokenapi + "&total_data=" + limit + "&id_kategori=" + id_kategori;
-
+  
   fetch(apiUrl)
     .then(response => {
       if (!response.ok) {
@@ -133,22 +122,13 @@ function fetchProducts(id_kategori) {
     .then(productsData => {
       resetProductContainer();
       if (productsData.data.length === 0) {
-        console.log("Produk tidak ditemukan, menyembunyikan overlay loading...");
         document.getElementById('loading-overlay').style.display = 'none';
-        
-        setTimeout(() => {
-          location.reload(); 
-        }, 3000); 
-      } else {
-        displayProducts(productsData.data);
-        sortProductsByPrice('asc');
       }
+      displayProducts(productsData.data);
+      sortProductsByPrice('asc');
     })
     .catch(error => {
       console.error("There was a problem with the fetch operation:", error);
-      setTimeout(() => {
-        location.reload();
-      }, 3000);
     });
 }
 
@@ -219,27 +199,30 @@ function displayProducts(products) {
 function cekNick() {
     var id = $('#id').val();
     if (id === "") {
-     $('#nick').text('');
-     $('#nickplayer').text('');
+        $('#nick').text('ID Kosong');
+        $('#nickplayer').text('');
+        return;
     }
+    
     $.ajax({
-     method: "GET",
-     url: "https://payday.my.id/trueid/game/" + games + "/?id=" + id + "&key=KoboStore",
-         beforeSend: function () {
-     $('#nick').html('<i class="fas fa-spinner"></i> Mengecek...');
-     $('#theend').show()
-    },
-    success: function (response) {
-     if (response.hasOwnProperty('error_msg')) {
-      $('#nick').text('Tidak Ditemukan!');
-      $('#theend').hide()
-     } else {
-      $('#nick').text(response.nickname);
-      $('#theend').show()
-     }
-    }
-   });
+        method: "GET",
+        url: "https://payday.my.id/trueid/game/" + games + "/?id=" + id + "&key=KoboStore",
+        beforeSend: function () {
+            $('#nick').html('<i class="fas fa-spinner"></i> Mengecek...');
+            $('#theend').show();
+        },
+        success: function (response) {
+            if (response.hasOwnProperty('error_msg')) {
+                $('#nick').text('Tidak Ditemukan!');
+                $('#theend').hide();
+            } else {
+                $('#nick').text(response.nickname);
+                $('#theend').show();
+            }
+        }
+    });
 }
+
 
 
 
